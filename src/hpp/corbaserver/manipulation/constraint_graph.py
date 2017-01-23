@@ -320,15 +320,15 @@ class ConstraintGraph (object):
                     pdofs.append (pair.passiveJoints)
 
         if node is not None:
-            self.graph.setNumericalConstraints (self.nodes [node], nc, nopdofs)
+            self.graph.setNumericalConstraints (self.nodes [node], nc, pdofs)
             self.graph.setNumericalConstraintsForPath (self.nodes [node], nc,
                                                        pdofs)
             self.graph.setLockedDofConstraints (self.nodes [node], lockDof)
         elif edge is not None:
-            self.graph.setNumericalConstraints (self.edges [edge], nc, nopdofs)
+            self.graph.setNumericalConstraints (self.edges [edge], nc, pdofs)
             self.graph.setLockedDofConstraints (self.edges [edge], lockDof)
         elif graph:
-            self.graph.setNumericalConstraints (self.graphId, nc, nopdofs)
+            self.graph.setNumericalConstraints (self.graphId, nc, pdofs)
             self.graph.setLockedDofConstraints (self.graphId, lockDof)
 
     ## Set the numerical constraints of a LevelSetEdge that create the foliation.

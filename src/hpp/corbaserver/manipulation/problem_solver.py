@@ -436,7 +436,7 @@ class ProblemSolver (object):
     # \param lockJointBname base name of the LockedJoint constraints
     #        (It will be completed by '_xy' and '_rz'),
     # \param values config of the locked joints (4 float)
-    def lockPlanarJoint (self, planarBname, lockJointBname, values = (0,0,0)):
+    def lockPlanarJoint (self, planarBname, lockJointBname, values = (0,0,1,0)):
         lockedJoints = list ()
         self.createLockedJoint (lockJointBname, planarBname, values)
         lockedJoints.append (lockJointBname)
