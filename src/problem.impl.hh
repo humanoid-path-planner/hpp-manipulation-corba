@@ -102,6 +102,8 @@ namespace hpp {
             CORBA::Long& indexProj)
           throw (hpp::Error);
 
+        virtual void setTargetState (hpp::ID IDstate);
+
       private:
         ProblemSolverPtr_t problemSolver();
         graph::GraphPtr_t graph(bool throwIfNull = true);

@@ -584,6 +584,20 @@ namespace hpp {
 	  throw hpp::Error (exc.what ());
 	}
       }
+
+      void Problem::setTargetState (hpp::ID IDstate)
+      {
+        try {
+          graph::GraphComponentPtr_t comp = graph()->get ((size_t)IDstate).lock ();
+          graph::StatePtr_t state = HPP_DYNAMIC_PTR_CAST(graph::State, comp);
+          if (!state) {
+            HPP_THROW(Error, "ID " << IDstate << " is not a state.");
+          }
+          problemSolver()->setTargetState(state);
+        } catch (const std::exception& exc) {
+          throw hpp::Error (exc.what ());
+        }
+      }
     } // namespace impl
   } // namespace manipulation
 } // namespace hpp

@@ -198,6 +198,11 @@ module hpp {
         boolean buildAndProjectPath (in ID IDedge, in floatSeq qb, in floatSeq qe, out long indexNotProj,
             out long indexProj)
           raises (Error);
+
+        /// Set a state of the constraint graph as target of the problem.
+        /// \warning when setTargetState is called, goal configurations are
+        ///          ignored.
+        void setTargetState(in ID IDstate) raises (Error);
       }; // interface Problem
     }; // module manipulation
   }; // module corbaserver
