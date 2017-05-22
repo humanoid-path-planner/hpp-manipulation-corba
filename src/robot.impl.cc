@@ -114,6 +114,7 @@ namespace hpp {
 	  srdf::addRobotSRDFModel (robot, std::string (robotName),
               std::string (packageName), std::string (modelName),
               std::string (srdfSuffix));
+          robot->didInsertRobot (robotName);
           problemSolver()->resetProblem ();
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
