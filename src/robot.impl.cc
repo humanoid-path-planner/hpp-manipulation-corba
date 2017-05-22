@@ -64,6 +64,51 @@ namespace hpp {
           if (!j) throw hpp::Error ("Joint not found.");
           return j;
         }
+
+        template<typename GripperOrHandle>
+          GripperOrHandle copy (const GripperOrHandle& in, const DevicePtr_t& device, const std::string& p);
+
+        template<> GripperPtr_t copy (const GripperPtr_t& in, const DevicePtr_t& device, const std::string& p) {
+            Transform3f position = (in->joint()
+                ? in->joint()->currentTransformation() * in->objectPositionInJoint()
+                : in->objectPositionInJoint());
+
+            se3::Model& model = device->model();
+            const std::string name = p + in->name();
+            if (model.existFrame(name))
+              throw std::invalid_argument ("Could not add the gripper because a frame \'" + name + "\" already exists.");
+            model.addFrame (se3::Frame(
+                  name,
+                  model.getJointId("universe"),
+                  model.getFrameId("universe"),
+                  position,
+                  se3::OP_FRAME));
+
+            GripperPtr_t out = Gripper::create(name, device);
+            out->clearance (in->clearance());
+            return out;
+        }
+
+        template<> HandlePtr_t copy (const HandlePtr_t& in, const DevicePtr_t& device, const std::string& p) {
+            Transform3f position = (in->joint()
+                ? in->joint()->currentTransformation() * in->localPosition()
+                : in->localPosition());
+
+            HandlePtr_t out = Handle::create(p + in->name(), position, JointPtr_t(new Joint(device, 0)));
+            out->clearance (in->clearance());
+            return out;
+        }
+
+        template<typename Object>
+        void copy(const DevicePtr_t& from, const DevicePtr_t& to, const std::string& prefix)
+        {
+          typedef typename Device::Containers_t::traits<Object>::Map_t Map;
+          const Map& m = from->map <Object> ();
+          for (typename Map::const_iterator it = m.begin (); it != m.end (); it++) {
+            Object obj = copy<Object>(it->second, to, prefix);
+            to->add <Object> (obj->name(), obj);
+          }
+        }
       }
 
       Robot::Robot () : server_ (0x0)
@@ -167,8 +212,9 @@ namespace hpp {
 	throw (hpp::Error)
       {
 	try {
-          DevicePtr_t object =
-            Device::create (std::string (envModelName));
+          DevicePtr_t robot = getRobotOrThrow (problemSolver());
+
+          DevicePtr_t object = Device::create (std::string (envModelName));
           srdf::loadEnvironmentModel (object,
               std::string (package), std::string (envModelName),
               std::string (urdfSuffix), std::string (srdfSuffix));
@@ -203,6 +249,9 @@ namespace hpp {
             }
             problemSolver()->PSC_t::add (p + it->first, shapes);
           }
+
+          copy<HandlePtr_t > (object, robot, p);
+          copy<GripperPtr_t> (object, robot, p);
 	} catch (const std::exception& exc) {
 	  throw hpp::Error (exc.what ());
 	}
