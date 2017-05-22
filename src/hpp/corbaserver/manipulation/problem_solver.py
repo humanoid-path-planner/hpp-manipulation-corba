@@ -657,4 +657,9 @@ class ProblemSolver (object):
 	return self.client.basic.problem.addEdgeToRoadmap \
           (config1, config2, pathId, bothEdges)
 
+    ## Set the problem target to stateId
+    # The planner will look for a path from the init configuration to a configuration in
+    # state stateId
+    def setTargetState (self, stateId):
+        self.client.manipulation.problem.setTargetState(stateId)
     ## \}

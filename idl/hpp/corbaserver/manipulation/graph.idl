@@ -290,10 +290,10 @@ module hpp {
 	/// \code
 	/// grippers = ['gripper_1', 'gripper_2']
 	/// objects = ['object_1', 'object_2', 'object_3']
-	/// handlesPerObject = [['object_1/handle_1','object_1/handle_2',]
+	/// handlesPerObject = [['object_1/handle_1','object_1/handle_2',],
 	///    ['object_2/handle_1',], ['object_3/handle_1',]]
-	/// contactsPerObject = [['object_1/contact_1',]
-	///    ['object_2/contact_1','object_2/contact_2',]
+	/// contactsPerObject = [['object_1/contact_1',],
+	///    ['object_2/contact_1','object_2/contact_2',],
 	///    ['object_3/contact_1',]]
 	/// from hpp.corbaserver.manipulation import Rule
 	/// rules = [Rule(['gripper_1'], ['object_1/handle_2'], True),

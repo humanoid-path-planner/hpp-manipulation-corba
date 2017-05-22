@@ -88,6 +88,22 @@ class Robot (object):
         self.rootJointType[robotName] = rootJointType
         self.rebuildRanks ()
 
+    ## Load a SRDF for the robot. Several SRDF can thus be loaded for the same robot
+    #
+    #  \param robotName key of the robot in hpp::manipulation::Device object
+    #         map (see hpp::manipulation::Device)
+    #  \param packageName Name of the ROS package containing the model,
+    #  \param modelName Name of the package containing the model
+    #  \param srdfSuffix suffix for srdf file,
+    #
+    #  The ros url are built as follows:
+    #  \li "package://${packageName}/srdf/${modelName}${srdfSuffix}.srdf"
+    def insertRobotSRDFModel (self, robotName, packageName,
+            modelName, srdfSuffix):
+        if self.load:
+            self.client.manipulation.robot.insertRobotSRDFModel (robotName,
+                    packageName, modelName, srdfSuffix)
+
     ## Load humanoid robot model and insert it in the device
     #
     #  \param robotName key of the robot in ProblemSolver object map
@@ -352,6 +368,10 @@ class Robot (object):
     # body.
     def distancesToCollision (self):
         return self.client.basic.robot.distancesToCollision ()
+
+    ## See hpp.corbaserver.Robot.getRobotAABB
+    def getRobotAABB (self):
+        return self.client.basic.robot.getRobotAABB ()
     ## \}
 
     ## \}
