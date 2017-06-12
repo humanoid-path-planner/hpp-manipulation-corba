@@ -252,6 +252,8 @@ namespace hpp {
 
           copy<HandlePtr_t > (object, robot, p);
           copy<GripperPtr_t> (object, robot, p);
+          robot->didInsertRobot (p.substr(0, p.size() - 1));
+          problemSolver()->resetProblem ();
 	} catch (const std::exception& exc) {
 	  throw hpp::Error (exc.what ());
 	}
