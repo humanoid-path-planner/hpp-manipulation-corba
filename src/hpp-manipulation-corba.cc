@@ -48,10 +48,10 @@ int main (int argc, char* argv [])
 
   corbaServer.startCorbaServer ();
   #if HPP_MANIPULATION_HAS_WHOLEBODY_STEP  
-    wbsServer.startCorbaServer ("hpp", "corbaserver",
+    wbsServer.startCorbaServer (corbaServer.mainContextId(), "corbaserver",
 				"wholebodyStep", "problem");
   #endif
-  manipServer.startCorbaServer ("hpp", "corbaserver",
+  manipServer.startCorbaServer (corbaServer.mainContextId(), "corbaserver",
 				"manipulation");
   corbaServer.processRequest(true);
 }

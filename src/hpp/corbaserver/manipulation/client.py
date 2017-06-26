@@ -36,7 +36,7 @@ class Client:
   """
   Connect and create clients for hpp-manipulation library.
   """
-  def __init__(self, url = None):
+  def __init__(self, url = None, postContextId = ""):
     """
     Initialize CORBA and create default clients.
     :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
@@ -53,8 +53,10 @@ class Client:
     if self.rootContext is None:
         raise CorbaError ('failed to narrow the root context')
 
+    rtContextId = "hpp" + postContextId;
+
     # client of Graph interface
-    name = [CosNaming.NameComponent ("hpp", "corbaserver"),
+    name = [CosNaming.NameComponent (rtContextId, "corbaserver"),
             CosNaming.NameComponent ("manipulation", "graph")]
 
     try:
@@ -73,7 +75,7 @@ class Client:
     self.graph = client
 
     # client of Problem interface
-    name = [CosNaming.NameComponent ("hpp", "corbaserver"),
+    name = [CosNaming.NameComponent (rtContextId, "corbaserver"),
             CosNaming.NameComponent ("manipulation", "problem")]
     
     try:
@@ -92,7 +94,7 @@ class Client:
     self.problem = client
 
     # client of Robot interface
-    name = [CosNaming.NameComponent ("hpp", "corbaserver"),
+    name = [CosNaming.NameComponent (rtContextId, "corbaserver"),
             CosNaming.NameComponent ("manipulation", "robot")]
     
     try:
