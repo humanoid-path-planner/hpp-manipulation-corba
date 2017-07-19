@@ -32,7 +32,9 @@
 #include <hpp/core/path-vector.hh>
 #include <hpp/pinocchio/gripper.hh>
 #include <hpp/constraints/convex-shape-contact.hh>
-#include <hpp/constraints/qp-static-stability.hh>
+#ifdef HPP_CONSTRAINTS_USE_QPOASES
+# include <hpp/constraints/qp-static-stability.hh>
+#endif
 #include <hpp/manipulation/device.hh>
 #include <hpp/manipulation/problem.hh>
 #include <hpp/manipulation/constraint-set.hh>
@@ -374,6 +376,7 @@ namespace hpp {
         throw (hpp::Error)
       {
 	try {
+#ifdef HPP_CONSTRAINTS_USE_QPOASES
 	  // Get robot in hppPlanner object.
           DevicePtr_t robot = getRobotOrThrow (problemSolver());
 
@@ -412,6 +415,10 @@ namespace hpp {
           problemSolver()->addNumericalConstraint (placName,
               NumericalConstraint::create (c, core::EqualToZero::create())
               );
+#else
+          throw std::runtime_error
+            ("Problem::createQPStabilityConstraint is not implemented");
+#endif
 	} catch (const std::exception& exc) {
 	  throw hpp::Error (exc.what ());
 	}
