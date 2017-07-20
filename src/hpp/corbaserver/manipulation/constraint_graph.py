@@ -283,6 +283,10 @@ class ConstraintGraph (object):
                         grasps = None, pregrasps = None, lockDof = [],
                         numConstraints = [], passiveJoints = [],
                         grasp = None, pregrasp = None):
+        if not type (graph) is bool:
+            raise TypeError ("ConstraintGraph.setConstraints: " +\
+                             "graph argument should be a boolean, got " + \
+                             repr (graph))
         if grasp is not None:
             from warnings import warn
             warn ("grasp argument is deprecated: use grasps and provide a " +
