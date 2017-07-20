@@ -237,6 +237,16 @@ class Robot (object):
     def setJointBounds (self, jointName, inJointBound):
         return self.client.basic.robot.setJointBounds (jointName, inJointBound)
 
+    ## Get bounds for a joint
+    #
+    #  \param jointName name of the joint
+    #  \return sequence of bounds in order [v0_min,v0_max,v1_min,v1_max,...]
+    #          where vi_min, vi_max are the bounds of the i-th degree of
+    #          freedom of the joint if the degree of freedom is bounded, 1, 0
+    #          otherwise.
+    def getJointBounds (self, jointName):
+        return self.client.basic.robot.getJointBounds (jointName)
+
     ## Set the position of root joint of a robot in world frame
     ## \param robotName key of the robot in ProblemSolver object map.
     ## \param position constant position of the root joint in world frame in
