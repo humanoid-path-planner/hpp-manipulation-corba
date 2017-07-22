@@ -18,6 +18,7 @@
 # <http://www.gnu.org/licenses/>.
 
 from subprocess import Popen
+from constraints import Constraints
 
 ## Association of a numerical constraint with the associated passive joints
 #
@@ -274,37 +275,68 @@ class ConstraintGraph (object):
     # This method sets the constraints of an element of the graph and handles
     # the special cases of grasp and pregrasp constraints.
     #
-    ## \param graph set to true if you are defining constraints for every nodes,
-    ## \param node edge name of a component of the graph,
-    ## \param grasps list of names of grasp. Each grasp
-    ## \param pregrasps list of names of pregrasps
-    ## \note Exaclty one of the parameter graph, node and edge must be set.
+    # \param graph set to true if you are defining constraints for every nodes,
+    # \param node edge name of a component of the graph,
+    #
+    # \param constraints set of constraints containing grasps, pregrasps,
+    #                    numerical constraints and locked joints
+    #
+    # \param grasps (deprecated) list of names of grasp. Each grasp
+    # \param pregrasps (deprecated) list of names of pregrasps
+    # \param numConstraints (deprecated) numerical constraints
+    # \param passiveJoints passive joints (not modified by constraint
+    #                      resolution)
+    # \note Exaclty one of the parameter graph, node and edge must be set.
     def setConstraints (self, graph = False, node = None, edge = None,
+                        constraints = None,
                         grasps = None, pregrasps = None, lockDof = [],
-                        numConstraints = [], passiveJoints = [],
-                        grasp = None, pregrasp = None):
+                        numConstraints = [], passiveJoints = []):
+        """
+        Set the constraints of an edge, a node or the whole graph
+
+          This method sets the constraints of an element of the graph and
+          handles the special cases of grasp and pregrasp constraints.
+
+          input
+            graph: set to true if you are defining constraints for every nodes,
+            node, edge: name of a component of the graph,
+            constraints: set of constraints containing grasps, pregrasps,
+                         numerical constraints and locked joints
+
+            passiveJoints: passive joints (not modified by constraint
+                           resolution)
+          note: Exaclty one of the parameter graph, node and edge must be set.
+        """
+        if constraints is None or not grasps is None or not pregrasps is None \
+           or not lockDof is None or not numConstraints is None :
+            from warnings import warn
+            warn ("arguments grasps, pregrasps, lockDof and numConstraints " +\
+                  "are deprecated. Use argument constraints instead")
+        if constraints:
+            if not type (constraints) is Constraints:
+                raise TypeError \
+                    ("argument constraints should be of type Constraints")
+
+            return self._setConstraints \
+                (graph = graph, node = node, edge = edge,
+                 grasps = constraints.grasps,
+                 pregrasps = constraints.pregrasps,
+                 lockDof = constraints.lockedJoints,
+                 numConstraints = constraints.numConstraints,
+                 passiveJoints = passiveJoints)
+        else:
+            return self._setConstraints \
+                (graph = graph, node = node, edge = edge, grasps = grasps,
+                 pregrasps = pregrasps, lockDof = lockedDof,
+                 numConstraints = numConstraints, passiveJoints = passiveJoints)
+
+    def _setConstraints (self, graph = False, node = None, edge = None,
+                         grasps = None, pregrasps = None, lockDof = [],
+                         numConstraints = [], passiveJoints = []):
         if not type (graph) is bool:
             raise TypeError ("ConstraintGraph.setConstraints: " +\
                              "graph argument should be a boolean, got " + \
                              repr (graph))
-        if grasp is not None:
-            from warnings import warn
-            warn ("grasp argument is deprecated: use grasps and provide a " +
-                  "list of grasp names")
-            if type (grasp) is str:
-                grasps = [grasp,]
-            else:
-                grasps = grasp
-
-        if pregrasp is not None:
-            from warnings import warn
-            warn ("pregrasp argument is deprecated: use pregrasps and provide" +
-                  " a list of pregrasp names")
-            if type (pregrasp) is str:
-                pregrasps = [pregrasp,]
-            else:
-                pregrasps = pregrasp
-
         nc = numConstraints [:]
         nopdofs = ["" for i in range (len(numConstraints))]
         pdofs = nopdofs [::]

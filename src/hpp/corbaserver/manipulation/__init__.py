@@ -9,3 +9,4 @@ import robot_idl
 from client import Client
 from problem_solver import ProblemSolver
 from constraint_graph import ConstraintGraph
+from constraints import Constraints
