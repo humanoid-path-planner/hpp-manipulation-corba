@@ -59,7 +59,6 @@ namespace hpp {
 
       namespace {
         typedef core::ProblemSolver CPs_t;
-        typedef ProblemSolver::ThisC_t PsC_t;
 
         template <typename T> std::string toStr () { return typeid(T).name(); }
         template <> std::string toStr <graph::State> () { return "Node"; }
@@ -419,14 +418,15 @@ namespace hpp {
         try {
           for (CORBA::ULong i=0; i<condNC.length (); ++i) {
             std::string name (condNC [i]);
-            edge->insertConditionConstraint (
-                HPP_STATIC_PTR_CAST(NumericalConstraint,
-                problemSolver()->CPs_t::get <NumericalConstraintPtr_t>(name)->copy ())
-                );
+            edge->insertConditionConstraint
+              (HPP_STATIC_PTR_CAST(NumericalConstraint,
+                                   problemSolver()->get
+                                   <NumericalConstraintPtr_t>(name)->copy ()));
           }
           for (CORBA::ULong i=0; i<condLJ.length (); ++i) {
             std::string name (condLJ [i]);
-            edge->insertConditionConstraint (problemSolver()->PsC_t::get <LockedJointPtr_t> (name));
+            edge->insertConditionConstraint (problemSolver()->get
+                                             <LockedJointPtr_t> (name));
           }
 
           std::vector <std::string> pdofNames = convertPassiveDofNameVector
@@ -435,12 +435,13 @@ namespace hpp {
             std::string name (paramNC [i]);
             edge->insertParamConstraint (
                 HPP_STATIC_PTR_CAST(NumericalConstraint,
-                problemSolver()->CPs_t::get <NumericalConstraintPtr_t>(name)->copy ()),
+                problemSolver()->get <NumericalConstraintPtr_t>(name)->copy ()),
                 problemSolver()->passiveDofs (pdofNames [i]));
           }
           for (CORBA::ULong i=0; i<paramLJ.length (); ++i) {
             std::string name (paramLJ [i]);
-            edge->insertParamConstraint (problemSolver()->PsC_t::get <LockedJointPtr_t> (name));
+            edge->insertParamConstraint
+              (problemSolver()->get <LockedJointPtr_t> (name));
           }
 
           edge->buildHistogram ();
@@ -534,7 +535,8 @@ namespace hpp {
 
       void Graph::resetConstraints(const Long graphComponentId) throw (hpp::Error)
       {
-        graph::GraphComponentPtr_t component = getComp<graph::GraphComponent>(graphComponentId, true);
+        graph::GraphComponentPtr_t component =
+          getComp<graph::GraphComponent>(graphComponentId, true);
 	component->resetNumericalConstraints();
 	component->resetLockedJoints();
       }
@@ -575,7 +577,7 @@ namespace hpp {
             for (CORBA::ULong i=0; i<constraintNames.length (); ++i) {
               std::string name (constraintNames [i]);
               component->addLockedJointConstraint
-		(problemSolver()->PsC_t::get <LockedJointPtr_t> (name));
+		(problemSolver()->get <LockedJointPtr_t> (name));
             }
           } catch (std::exception& err) {
             throw Error (err.what());

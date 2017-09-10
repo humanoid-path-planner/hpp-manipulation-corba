@@ -39,7 +39,6 @@ namespace hpp {
       namespace {
         using pinocchio::Gripper;
         typedef core::ProblemSolver CPs_t;
-        typedef ProblemSolver::ThisC_t PSC_t;
 
         DevicePtr_t createRobot (const std::string& name) {
           DevicePtr_t r = Device::create (name);
@@ -247,7 +246,7 @@ namespace hpp {
                 newShape [i] = M.act (itT->second[i]);
               shapes.push_back (JointAndShape_t (JointPtr_t(), newShape));
             }
-            problemSolver()->PSC_t::add (p + it->first, shapes);
+            problemSolver()->add (p + it->first, shapes);
           }
 
           copy<HandlePtr_t > (object, robot, p);

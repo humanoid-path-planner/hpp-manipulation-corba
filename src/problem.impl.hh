@@ -51,14 +51,6 @@ namespace hpp {
             const char* gripperName, const char* handleName)
 	  throw (hpp::Error);
 
-        virtual void createLockedJoint (const char* lockedJointName,
-            const char* jointName, const hpp::floatSeq& value)
-	  throw (hpp::Error);
-
-        virtual void createLockedExtraDof (const char* lockedDofName,
-            const CORBA::ULong index, const hpp::floatSeq& value)
-	  throw (hpp::Error);
-
         virtual Names_t* getEnvironmentContactNames ()
           throw (hpp::Error);
 

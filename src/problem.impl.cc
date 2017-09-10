@@ -26,7 +26,6 @@
 #include <hpp/core/roadmap.hh>
 #include <hpp/core/distance.hh>
 #include <hpp/core/comparison-type.hh>
-#include <hpp/core/locked-joint.hh>
 #include <hpp/core/config-projector.hh>
 #include <hpp/core/path-projector.hh>
 #include <hpp/core/path-vector.hh>
@@ -52,7 +51,6 @@ namespace hpp {
       namespace {
         using corbaServer::floatSeqToConfigPtr;
         typedef core::ProblemSolver CPs_t;
-        typedef ProblemSolver::ThisC_t PsC_t;
 
         Names_t* jointAndShapes (const JointAndShapes_t& js,
             intSeq_out indexes_out, floatSeqSeq_out points) {
@@ -142,17 +140,15 @@ namespace hpp {
           ret = getRobotOrThrow (problemSolver())->getKeys <pinocchio::GripperPtr_t, Ret_t> ();
         } else if (w == "handle") {
           ret = getRobotOrThrow (problemSolver())->getKeys <HandlePtr_t, Ret_t> ();
-        } else if (w == "lockedjoint") {
-          ret = problemSolver()->PsC_t::getKeys <core::LockedJointPtr_t, Ret_t> ();
         } else if (w == "robotcontact") {
           ret = getRobotOrThrow (problemSolver())->getKeys <JointAndShapes_t, Ret_t> ();
         } else if (w == "envcontact") {
-          ret = problemSolver()->PsC_t::getKeys <JointAndShapes_t, Ret_t> ();
+          ret = problemSolver()->getKeys <JointAndShapes_t, Ret_t> ();
         } else if (w == "type") {
-          ret = boost::assign::list_of ("Gripper") ("Handle")
-            ("LockedJoint")("RobotContact")("EnvContact");
+          ret = boost::assign::list_of ("Gripper") ("Handle") ("RobotContact")
+            ("EnvContact");
         } else {
-          throw Error ("Type not understood");
+          throw Error ("Type not known");
         }
 
         char** nameList = Names_t::allocbuf((CORBA::Long) ret.size());
@@ -218,47 +214,12 @@ namespace hpp {
 	}
       }
 
-      void Problem::createLockedJoint
-      (const char* lockedJointName, const char* jointName,
-       const hpp::floatSeq& value)
-	throw (hpp::Error)
-      {
-	try {
-	  // Get robot in hppPlanner object.
-          DevicePtr_t robot = getRobotOrThrow (problemSolver());
-	  JointPtr_t joint = robot->getJointByName (jointName);
-	  vector_t config = floatSeqToVector (value, joint->configSize());
-          LockedJointPtr_t lockedJoint (LockedJoint::create (joint, config));
-          problemSolver()->PsC_t::add <LockedJointPtr_t> (lockedJointName, lockedJoint);
-	} catch (const std::exception& exc) {
-	  throw hpp::Error (exc.what ());
-	}
-      }
-
-      void Problem::createLockedExtraDof
-      (const char* lockedDofName, const CORBA::ULong index,
-       const hpp::floatSeq& value)
-	throw (hpp::Error)
-      {
-	try {
-	  // Get robot in hppPlanner object.
-          DevicePtr_t robot = getRobotOrThrow (problemSolver());
-	  vector_t config = floatSeqToVector (value);
-
-          LockedJointPtr_t lockedJoint
-            (LockedJoint::create (robot, index, config));
-          problemSolver()->PsC_t::add <LockedJointPtr_t> (lockedDofName, lockedJoint);
-	} catch (const std::exception& exc) {
-	  throw hpp::Error (exc.what ());
-	}
-      }
-
       Names_t* Problem::getEnvironmentContactNames ()
         throw (hpp::Error)
       {
         try {
 	  typedef std::map<std::string, JointAndShapes_t> ShapeMap;
-	  const ShapeMap& m = problemSolver()->PsC_t::map <JointAndShapes_t> ();
+	  const ShapeMap& m = problemSolver()->map <JointAndShapes_t> ();
 
 	  char** nameList = Names_t::allocbuf((ULong) m.size ());
 	  Names_t *jointNames = new Names_t ((ULong) m.size(), (ULong) m.size(),
@@ -308,7 +269,7 @@ namespace hpp {
       {
         try {
 	  const JointAndShapes_t& js =
-            problemSolver()->PsC_t::get <JointAndShapes_t> (name);
+            problemSolver()->get <JointAndShapes_t> (name);
 
           return jointAndShapes (js, indexes, points);
 	} catch (const std::exception& exc) {

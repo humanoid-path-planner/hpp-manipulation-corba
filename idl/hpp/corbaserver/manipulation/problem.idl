@@ -85,27 +85,6 @@ module hpp {
 	void createPreGrasp (in string name, in string gripper,
 			     in string handle) raises (Error);
 
-        /// Insert a new LockedJoint constraint with given value in the
-        ///        hpp::manipulation::ProblemSolver map
-        /// \param lockedJointName key of the constraint in the map
-        /// \param jointName name of the joint
-        /// \param value value of the joint configuration,
-        void createLockedJoint (in string lockedJointName,
-                                in string jointName,
-                                in floatSeq value)
-          raises (Error);
-
-        /// Insert a new LockedJoint constraint with given value in the
-        ///        hpp::manipulation::ProblemSolver map
-        /// \param lockedJointName key of the constraint in the map
-        /// \param index index of the extra dof (0 means the first extra dof)
-        /// \param value value of the extra dof configuration. The size of the
-        ///              of this vector defines the size of the constraints.
-        void createLockedExtraDof (in string lockedDofName,
-                                   in unsigned long index,
-                                   in floatSeq value)
-          raises (Error);
-
         Names_t getEnvironmentContactNames ()
           raises (Error);
 

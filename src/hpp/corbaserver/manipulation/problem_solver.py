@@ -394,14 +394,24 @@ class ProblemSolver (object):
 
     ## Set numerical constraints in ConfigProjector
     #
-    #  \param name name of the resulting numerical constraint obtained
-    #         by stacking elementary numerical constraints,
-    #  \param names list of names of the numerical constraints as
-    #         inserted by method hpp::core::ProblemSolver::addNumericalConstraint.
+    #  \param name name of the config projector created if any,
+    #  \param names list of names of the numerical constraints previously
+    #         created by methods createTransformationConstraint,
+    #         createRelativeComConstraint, ...
     def setNumericalConstraints (self, name, names, priorities = None):
         if priorities is None:
             priorities = [ 0 for i in names ]
-        return self.client.basic.problem.setNumericalConstraints (name, names, priorities)
+        return self.client.basic.problem.setNumericalConstraints \
+            (name, names, priorities)
+
+    ## Set locked joint in ConfigProjector
+    #
+    #  \param name name of the config projector created if any,
+    #  \param names list of names of the locked joints previously created by
+    #         method createLockedJoint.
+    def setLockedJointConstraints (self, name, names, priorities = None):
+        return self.client.basic.problem.setLockedJointConstraints \
+            (name, names, priorities)
 
     ## Apply constraints
     #
@@ -419,14 +429,23 @@ class ProblemSolver (object):
     def generateValidConfig (self, maxIter):
         return self.client.basic.problem.generateValidConfig (maxIter)
 
-    ## Insert a new LockedDof constraint with given value in the
-    #        hpp::manipulation::ProblemSolver map
-    # \param lockedDofName key of the constraint in the map
-    # \param jointName name of the joint
-    # \param value value of the joint configuration
+    ## Create a LockedJoint constraint with given value
+    #  \param lockedJointName key of the constraint in the ProblemSolver map,
+    #  \param jointName name of the joint,
+    #  \param value value of the joint configuration,
     def createLockedJoint (self, lockedDofName, jointName, value):
-        return self.client.manipulation.problem.createLockedJoint \
+        return self.client.basic.problem.createLockedJoint \
             (lockedDofName, jointName, value)
+
+    ## Create a locked extradof
+    #         hpp::manipulation::ProblemSolver map
+    #  \param lockedDofName key of the constraint in the Problem Solver map
+    #  \param index index of the extra dof (0 means the first extra dof)
+    #  \param value value of the extra dof configuration. The size
+    #               of this vector defines the size of the constraints.
+    def createLockedExtraDof (self, lockedDofName, index, value):
+        return self.client.basic.problem.createLockedExtraDof \
+            (lockedDofName, index, value)
 
     ## Lock degree of freedom of a FreeFlyer joint
     # \param freeflyerBname base name of the joint
