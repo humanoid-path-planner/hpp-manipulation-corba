@@ -494,9 +494,7 @@ namespace hpp {
               if (!problemSolver()->numericalConstraint (name))
                 throw Error ("The numerical function does not exist.");
               component->addNumericalConstraint
-		(HPP_STATIC_PTR_CAST
-		 (NumericalConstraint,
-		  problemSolver()->numericalConstraint(name)->copy ()),
+		(problemSolver()->numericalConstraint(name),
 		 problemSolver()->passiveDofs (pdofNames [i]));
             }
           } catch (std::exception& err) {
