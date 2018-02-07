@@ -31,6 +31,11 @@ class Rules(object):
         rs = []
         status = []
         for r in rules:
+            # replace empty strings by the corresponding regexp "^$", otherwise "" matches with all strings.
+            for i in range(len(r.grippers)):
+                if r.grippers[i] == "": r.grippers[i] = "^$"
+            for i in range(len(r.handles)):
+                if r.handles[i] == "": r.handles[i] = "^$"
             handlesRegex = [ None ] * len(grippers)
             for j, gr in zip_idx (r.grippers):
                 grc = re.compile (gr)
