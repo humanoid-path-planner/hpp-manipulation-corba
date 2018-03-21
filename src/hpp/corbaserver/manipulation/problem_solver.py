@@ -547,6 +547,16 @@ class ProblemSolver (object):
     def clearPathOptimizers (self):
         return self.client.basic.problem.clearPathOptimizers ()
 
+    ## Add a config validation
+    #  \see hpp.corbaserver.problem_solver.ProblemSolver.addConfigValidation
+    def addConfigValidation (self, configValidationType):
+        return self.client.basic.problem.addConfigValidation (configValidationType)
+
+    ## Clear config validations
+    #  \see hpp.corbaserver.problem_solver.ProblemSolver.clearConfigValidations
+    def clearConfigValidations (self):
+        return self.client.basic.problem.clearConfigValidations ()
+
     ## Select path validation method
     #  \param Name of the path validation method, either "Discretized"
     #  "Progressive", "Dichotomy", or any type added by
