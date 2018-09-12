@@ -545,6 +545,15 @@ class ProblemSolver (object):
     def selectPathPlanner (self, pathPlannerType):
         return self.client.basic.problem.selectPathPlanner (pathPlannerType)
 
+    ## Select configuration shooter type
+    #  \param Name of the configuration shooter type
+    #  \note the configuration shooter is created and initialized
+    #        when calling this method. This might be important if the
+    #        initialization depends on the current state of the robot.
+    def selectConfigurationShooter (self, configurationShooterType):
+        return self.client.basic.problem.selectConfigurationShooter \
+            (configurationShooterType)
+
     ## Add path optimizer type
     #  \see hpp.corbaserver.problem_solver.ProblemSolver.addPathOptimizer
     def addPathOptimizer (self, pathOptimizerType):
