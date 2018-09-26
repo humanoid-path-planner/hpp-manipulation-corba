@@ -580,10 +580,9 @@ namespace hpp {
             for (CORBA::ULong i=0; i<constraintNames.length (); ++i) {
               std::string name (constraintNames [i]);
               n->addNumericalConstraintForPath
-		(HPP_STATIC_PTR_CAST
-		 (Implicit,
-		  problemSolver()->numericalConstraint(name)->copy ()),
-                 problemSolver()->passiveDofs.get (pdofNames [i], core::segments_t()));
+                (problemSolver()->numericalConstraint(name)->copy (),
+                 problemSolver()->passiveDofs.get (pdofNames [i],
+                                                   core::segments_t()));
             }
           } catch (std::exception& err) {
             throw Error (err.what());
