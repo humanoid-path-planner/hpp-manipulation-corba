@@ -112,6 +112,8 @@ class ConstraintGraph (object):
     ## \param name name of the edge,
     ## \param weight see note,
     ## \param isInNode name of the node in which paths of the edge are included.
+    ##        if None, it consists of the node coming the latest in the list of
+    ##        nodes.
     ## \note The weights define the probability of selecting an edge among all the
     ## outgoing edges of a node. The probability of an edge is \f$ \frac{w_i}{\sum_j{w_j}} \f$,
     ## where each \f$ w_j \f$ corresponds to an outgoing edge from a given node.
@@ -119,9 +121,10 @@ class ConstraintGraph (object):
     ## set its weight to zero.
     def createEdge (self, nodeFrom, nodeTo, name, weight = 1, isInNode = None):
         if (type (isInNode) != str) :
-            from warnings import warn
-            warn ("argument isInNode should be of type string")
-            if isInNode is None:
+            if not isInNode is None:
+                from warnings import warn
+                warn ("argument isInNode should be of type string")
+            else :
                 if self.nodes[nodeFrom] > self.nodes[nodeTo]:
                     isInNode = nodeFrom
                 else:
@@ -173,9 +176,10 @@ class ConstraintGraph (object):
     def createWaypointEdge (self, nodeFrom, nodeTo, name, nb = 1, weight = 1,
                             isInNode = None, automaticBuilder = True):
         if (type (isInNode) != str) :
-            from warnings import warn
-            warn ("argument isInNode should be of type string")
-            if isInNode is None:
+            if not isInNode is None:
+                from warnings import warn
+                warn ("argument isInNode should be of type string")
+            else :
                 if self.nodes[nodeFrom] > self.nodes[nodeTo]:
                     isInNode = nodeFrom
                 else:
