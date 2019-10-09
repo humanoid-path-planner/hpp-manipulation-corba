@@ -345,12 +345,21 @@ module hpp {
 	    in Names_t envNames, in Rules rulesList)
           raises (Error);
 
+        /// Set weight of graph component
+        /// \param component index in the graph, should be an edge
+        /// \sa hpp::manipulation::graph::State::setWeight
         void setWeight (in ID edgeID, in long weight)
           raises (Error);
 
+        /// Get weight of graph component
+        /// \param component index in the graph, should be an edge
+        /// \sa hpp::manipulation::graph::State::getWeight
         long getWeight (in ID edgeID)
           raises (Error);
 
+        /// Get name of graph component
+        /// \param component index in the graph
+        /// \sa hpp::manipulation::graph::Graph::get
         string getName (in ID elmtID)
           raises (Error);
 
