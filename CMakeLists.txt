@@ -23,6 +23,7 @@ SET(PROJECT_DESCRIPTION "Corba server for manipulation planning")
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 SET(CUSTOM_HEADER_DIR hpp/corbaserver/manipulation)
 SET(PROJECT_USE_CMAKE_EXPORT TRUE)
+SET(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 SET(CXX_DISABLE_WERROR true)
 
 INCLUDE(cmake/hpp.cmake)

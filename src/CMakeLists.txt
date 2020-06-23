@@ -24,8 +24,7 @@ SET(IDL_SOURCES
 )
 
 INCLUDE(${HPP_CORBASERVER_CMAKE_PLUGIN})
-STRING(REPLACE "hpp-corbaserver-plugin.cmake" "omniidl.cmake" HPP_CORBASERVER_OMNIIDL ${HPP_CORBASERVER_CMAKE_PLUGIN})
-INCLUDE(${HPP_CORBASERVER_OMNIIDL})
+INCLUDE(${HPP_CORBASERVER_OMNIIDL_CMAKE})
 OMNIIDL_INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/idl ${HPP_CORBASERVER_DATAROOTDIR}/idl
   )
@@ -120,7 +119,7 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED
   client.cc
   )
 
-TARGET_LINK_LIBRARIES(${LIBRARY_NAME} hpp-corbaserver::hpp-corbaserver)
+TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC hpp-corbaserver::hpp-corbaserver)
 PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
 
 INSTALL(TARGETS ${LIBRARY_NAME} EXPORT ${TARGETS_EXPORT_NAME} DESTINATION lib)
@@ -138,13 +137,13 @@ IF (NOT CLIENT_ONLY)
     robot.impl.hh
     server.cc
     tools.cc # Should be moved into the library
-    LINK_DEPENDENCIES ${LIBRARY_NAME}
+    LINK_DEPENDENCIES PUBLIC ${LIBRARY_NAME} hpp-manipulation-urdf::hpp-manipulation-urdf
     PKG_CONFIG_DEPENDENCIES omniORB4)
 
 
   # Stand alone corba server
   ADD_EXECUTABLE (hpp-manipulation-server hpp-manipulation-corba.cc)
-  TARGET_LINK_LIBRARIES (hpp-manipulation-server ${LIBRARY_NAME} hpp-manipulation-urdf::hpp-manipulation-urdf)
+  TARGET_LINK_LIBRARIES (hpp-manipulation-server PUBLIC ${LIBRARY_NAME} hpp-manipulation-urdf::hpp-manipulation-urdf)
 
   INSTALL (TARGETS hpp-manipulation-server DESTINATION ${CMAKE_INSTALL_BINDIR})
 ENDIF (NOT CLIENT_ONLY)
