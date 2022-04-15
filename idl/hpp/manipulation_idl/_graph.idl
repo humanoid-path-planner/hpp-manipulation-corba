@@ -68,6 +68,11 @@ module hpp {
         constraints_idl::Implicits numericalCosts () raises (Error);
 
         void resetNumericalConstraints () raises (Error);
+
+        void setSolveLevelByLevel(in boolean input) raises(Error);
+        //-> solveLevelByLevel
+        boolean getSolveLevelByLevel() raises(Error);
+        //-> solveLevelByLevel
       }; // interface GraphComponent
 
       interface StateSelector
