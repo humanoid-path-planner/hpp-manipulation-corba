@@ -61,7 +61,10 @@ class SecurityMargins:
     """
 
     defaultMargin = 0
-
+    separators = ["/"]
+    """
+    Separators to guess wich joint belongs to which robot
+    """
     def __init__(self, problemSolver, factory, robotsAndObjects):
         """
         Constructor
@@ -82,7 +85,8 @@ class SecurityMargins:
         for ro in self.robotsAndObjects:
             le = len(ro)
             self.robotToJoints[ro] = list(
-                filter(lambda n: n[: le + 1] == ro + "/", self.robot.jointNames)
+                filter(lambda n: n[: le] == ro and n[le] in self.separators,
+                       self.robot.jointNames)
             )
         self.robotToJoints["universe"] = ["universe"]
         self.jointToRobot = dict()
