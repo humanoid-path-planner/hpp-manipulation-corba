@@ -143,7 +143,9 @@ void Robot::insertRobotModelOnFrame(const char* robotName,
     pinocchio::FrameIndex frame = robot->model().getFrameId(frameName);
     pinocchio::urdf::loadModel(robot, frame, robotName, rootJointType, urdfName,
                                srdfName);
-    srdf::loadModelFromFile(robot, robotName, srdfName);
+    if (!std::string(srdfName).empty()){
+      srdf::loadModelFromFile(robot, robotName, srdfName);
+    }
     problemSolver()->resetProblem();
   } catch (const std::exception& exc) {
     throw Error(exc.what());
