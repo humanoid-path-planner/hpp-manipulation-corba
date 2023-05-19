@@ -514,8 +514,11 @@ void Graph::addNumericalConstraints(const Long graphComponentId,
     try {
       for (CORBA::ULong i = 0; i < constraintNames.length(); ++i) {
         std::string name(constraintNames[i]);
-        if (!problemSolver()->numericalConstraint(name))
-          throw Error("The numerical function does not exist.");
+        if (!problemSolver()->numericalConstraint(name)) {
+          std::ostringstream os;
+          os << "Numerical constraint \"" << name << "\" does not exist.";
+          throw Error(os.str().c_str());
+        }
         component->addNumericalConstraint(
             problemSolver()->numericalConstraint(name));
       }

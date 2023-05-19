@@ -34,15 +34,6 @@ import sys
 from .constraints import Constraints
 
 
-def _removeEmptyConstraints(problem, constraints):
-    return [
-        n
-        for n in constraints
-        if n in problem.getAvailable("numericalconstraint")
-        and problem.getConstraintDimensions(n)[2] > 0
-    ]
-
-
 class Rules(object):
     def __init__(self, grippers, handles, rules):
         rs = []
@@ -523,6 +514,26 @@ class ConstraintFactory(ConstraintFactoryAbstract):
     Default implementation of ConstraintFactoryAbstract
     """
 
+    removeEmptyConstraints = True
+    """
+    This flag determines whether preplacement states are added when no
+    contact surface is present. Setting it to false may be useful in order
+    to keep the same graph topology and to populate the graph with dedicated
+    constraints.
+    """
+    def _removeEmptyConstraints(self, problem, constraints):
+        if self.removeEmptyConstraints:
+            return [
+                n
+                for n in constraints
+                if n in problem.getAvailable("numericalconstraint")
+                and problem.getConstraintDimensions(n)[2] > 0
+            ]
+        else:
+            return constraints
+
+
+
     gfields = ("grasp", "graspComplement", "preGrasp")
     pfields = ("placement", "placementComplement", "prePlacement")
 
@@ -555,7 +566,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
                     self.gfields,
                     (
                         Constraints(
-                            numConstraints=_removeEmptyConstraints(
+                            numConstraints=self._removeEmptyConstraints(
                                 self.graph.clientBasic.problem,
                                 [
                                     n,
@@ -563,7 +574,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
                             )
                         ),
                         Constraints(
-                            numConstraints=_removeEmptyConstraints(
+                            numConstraints=self._removeEmptyConstraints(
                                 self.graph.clientBasic.problem,
                                 [
                                     n + "/complement",
@@ -571,7 +582,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
                             )
                         ),
                         Constraints(
-                            numConstraints=_removeEmptyConstraints(
+                            numConstraints=self._removeEmptyConstraints(
                                 self.graph.clientBasic.problem,
                                 [
                                     pn,
@@ -639,7 +650,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
                     self.pfields,
                     (
                         Constraints(
-                            numConstraints=_removeEmptyConstraints(
+                            numConstraints=self._removeEmptyConstraints(
                                 self.graph.clientBasic.problem,
                                 [
                                     n,
@@ -647,7 +658,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
                             )
                         ),
                         Constraints(
-                            numConstraints=_removeEmptyConstraints(
+                            numConstraints=self._removeEmptyConstraints(
                                 self.graph.clientBasic.problem,
                                 [
                                     n + "/complement",
@@ -655,7 +666,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
                             )
                         ),
                         Constraints(
-                            numConstraints=_removeEmptyConstraints(
+                            numConstraints=self._removeEmptyConstraints(
                                 self.graph.clientBasic.problem,
                                 [
                                     pn,
