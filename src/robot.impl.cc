@@ -64,7 +64,6 @@ JointPtr_t getJointByBodyNameOrThrow(ProblemSolverPtr_t p,
                                      const std::string& n) {
   DevicePtr_t r = getRobotOrThrow(p);
   JointPtr_t j = r->getJointByBodyName(n);
-  if (!j) throw hpp::Error("Joint not found.");
   return j;
 }
 
@@ -363,14 +362,25 @@ void Robot::setRootJointPosition(const char* robotName,
 }
 
 void Robot::addHandle(const char* linkName, const char* handleName,
-                      const ::hpp::Transform_ localPosition) {
+    const ::hpp::Transform_ localPosition, const ::hpp::boolSeq& mask) {
   try {
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
     Transform3f T;
+    pinocchio::JointIndex index(0);
+    std::string jointName("universe");
+    if (joint) {
+      index = joint->index();
+      jointName = joint->name();
+    }
     hppTransformToTransform3f(localPosition, T);
     HandlePtr_t handle = Handle::create(handleName, T, robot, joint);
+    handle->mask(corbaServer::boolSeqToVector(mask, 6));
     robot->handles.add(handleName, handle);
+    assert(robot->model().existFrame(jointName));
+    FrameIndex previousFrame(robot->model().getFrameId(jointName));
+    robot->model().addFrame(::pinocchio::Frame(handleName, index, previousFrame,
+                                               T, ::pinocchio::OP_FRAME));
   } catch (const std::exception& exc) {
     throw Error(exc.what());
   }
@@ -382,31 +392,20 @@ void Robot::addGripper(const char* linkName, const char* gripperName,
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
     Transform3f T;
+    pinocchio::JointIndex index(0);
+    std::string jointName("universe");
+    if (joint) {
+      index = joint->index();
+      jointName = joint->name();
+    }
     hppTransformToTransform3f(p, T);
+    assert(robot->model().existFrame(jointName));
+    FrameIndex previousFrame(robot->model().getFrameId(jointName));
     robot->model().addFrame(::pinocchio::Frame(
-        gripperName, joint->index(), robot->model().getFrameId(joint->name()),
-        T, ::pinocchio::OP_FRAME));
+        gripperName, index, previousFrame, T, ::pinocchio::OP_FRAME));
     GripperPtr_t gripper = Gripper::create(gripperName, robot);
     robot->grippers.add(gripperName, gripper);
     // hppDout (info, "add Gripper: " << *gripper);
-  } catch (const std::exception& exc) {
-    throw Error(exc.what());
-  }
-}
-
-void Robot::addAxialHandle(const char* linkName, const char* handleName,
-                           const ::hpp::Transform_ localPosition) {
-  try {
-    DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
-    Transform3f T;
-    hppTransformToTransform3f(localPosition, T);
-    HandlePtr_t handle = Handle::create(handleName, T, robot, joint);
-    std::vector<bool> mask(6, true);
-    mask[5] = false;
-    handle->mask(mask);
-    robot->handles.add(handleName, handle);
-    hppDout(info, "add Handle: " << *handle);
   } catch (const std::exception& exc) {
     throw Error(exc.what());
   }

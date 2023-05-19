@@ -143,23 +143,14 @@ module hpp
         in Transform_ handlePositioninJoint)
       raises (Error);
 
-    /// Add Handle to an object
+    /// Add \link hpp::manipulation::Handle Handle \endlink to an object
     ///
-    /// \param linkName name of the link (hpp::model::Body) holding the handle,
+    /// \param linkName name of the link holding the handle,
     /// \param handleName name of the handle,
     /// \param localPosition position of the handle in the joint frame.
+    /// \param mask mask of the handle.
     void addHandle (in string linkName, in string handleName,
-        in Transform_ localPosition)
-      raises (Error);
-
-    /// Add axial handle to an object
-    ///
-    /// \param linkName name of the link (hpp::model::Body) holding the handle,
-    /// \param handleName name of the handle,
-    /// \param localPosition position of the handle in the joint frame,
-    ///        rotation around x-axis is not constrained.
-    void addAxialHandle (in string linkName, in string handleName,
-        in Transform_ localPosition)
+                    in Transform_ localPosition, in boolSeq mask)
       raises (Error);
 
     /// Return the joint name in which a gripper is and the position relatively
