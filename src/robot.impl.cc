@@ -362,7 +362,8 @@ void Robot::setRootJointPosition(const char* robotName,
 }
 
 void Robot::addHandle(const char* linkName, const char* handleName,
-    const ::hpp::Transform_ localPosition, const ::hpp::boolSeq& mask) {
+    const ::hpp::Transform_ localPosition, double clearance,
+    const ::hpp::boolSeq& mask) {
   try {
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
@@ -375,6 +376,7 @@ void Robot::addHandle(const char* linkName, const char* handleName,
     }
     hppTransformToTransform3f(localPosition, T);
     HandlePtr_t handle = Handle::create(handleName, T, robot, joint);
+    handle->clearance(clearance);
     handle->mask(corbaServer::boolSeqToVector(mask, 6));
     robot->handles.add(handleName, handle);
     assert(robot->model().existFrame(jointName));
@@ -387,7 +389,7 @@ void Robot::addHandle(const char* linkName, const char* handleName,
 }
 
 void Robot::addGripper(const char* linkName, const char* gripperName,
-                       const ::hpp::Transform_ p) {
+                       const ::hpp::Transform_ p, double clearance) {
   try {
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
@@ -404,6 +406,7 @@ void Robot::addGripper(const char* linkName, const char* gripperName,
     robot->model().addFrame(::pinocchio::Frame(
         gripperName, index, previousFrame, T, ::pinocchio::OP_FRAME));
     GripperPtr_t gripper = Gripper::create(gripperName, robot);
+    gripper->clearance(clearance);
     robot->grippers.add(gripperName, gripper);
     // hppDout (info, "add Gripper: " << *gripper);
   } catch (const std::exception& exc) {

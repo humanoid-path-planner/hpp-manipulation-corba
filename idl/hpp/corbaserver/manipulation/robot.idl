@@ -139,8 +139,9 @@ module hpp
     /// \param linkName name of the link (hpp::model::Body) holding the gripper,
     /// \param gripperName name of the gripper,
     /// \param handlePositioninJoint position of the handle in the joint frame.
+    /// \param clearance clearance of the gripper
     void addGripper (in string linkName, in string gripperName,
-        in Transform_ handlePositioninJoint)
+                     in Transform_ handlePositioninJoint, in double clearance)
       raises (Error);
 
     /// Add \link hpp::manipulation::Handle Handle \endlink to an object
@@ -148,9 +149,10 @@ module hpp
     /// \param linkName name of the link holding the handle,
     /// \param handleName name of the handle,
     /// \param localPosition position of the handle in the joint frame.
+    /// \param clearance clearance of the gripper
     /// \param mask mask of the handle.
     void addHandle (in string linkName, in string handleName,
-                    in Transform_ localPosition, in boolSeq mask)
+        in Transform_ localPosition, in double clearance, in boolSeq mask)
       raises (Error);
 
     /// Return the joint name in which a gripper is and the position relatively

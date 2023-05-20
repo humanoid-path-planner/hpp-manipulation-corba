@@ -94,10 +94,11 @@ class Robot : public virtual POA_hpp::corbaserver::manipulation::Robot {
                                     const ::hpp::Transform_ position);
 
   virtual void addHandle(const char* linkName, const char* handleName,
-      const ::hpp::Transform_ localPosition, const ::hpp::boolSeq& mask);
+      const ::hpp::Transform_ localPosition, double clearance,
+      const ::hpp::boolSeq& mask);
 
   virtual void addGripper(const char* linkName, const char* gripperName,
-                          const ::hpp::Transform_ handlePositioninJoint);
+      const ::hpp::Transform_ handlePositioninJoint, double clearance);
 
   virtual char* getGripperPositionInJoint(const char* gripperName,
                                           ::hpp::Transform__out position);
