@@ -362,8 +362,8 @@ void Robot::setRootJointPosition(const char* robotName,
 }
 
 void Robot::addHandle(const char* linkName, const char* handleName,
-    const ::hpp::Transform_ localPosition, double clearance,
-    const ::hpp::boolSeq& mask) {
+                      const ::hpp::Transform_ localPosition, double clearance,
+                      const ::hpp::boolSeq& mask) {
   try {
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);

@@ -521,6 +521,7 @@ class ConstraintFactory(ConstraintFactoryAbstract):
     to keep the same graph topology and to populate the graph with dedicated
     constraints.
     """
+
     def _removeEmptyConstraints(self, problem, constraints):
         if self.removeEmptyConstraints:
             return [
@@ -531,8 +532,6 @@ class ConstraintFactory(ConstraintFactoryAbstract):
             ]
         else:
             return constraints
-
-
 
     gfields = ("grasp", "graspComplement", "preGrasp")
     pfields = ("placement", "placementComplement", "prePlacement")
