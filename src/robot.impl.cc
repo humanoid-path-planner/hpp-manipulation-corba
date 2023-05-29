@@ -383,6 +383,8 @@ void Robot::addHandle(const char* linkName, const char* handleName,
     FrameIndex previousFrame(robot->model().getFrameId(jointName));
     robot->model().addFrame(::pinocchio::Frame(handleName, index, previousFrame,
                                                T, ::pinocchio::OP_FRAME));
+    // Recreate pinocchio data after modifying model
+    robot->createData();
   } catch (const std::exception& exc) {
     throw Error(exc.what());
   }
@@ -405,6 +407,8 @@ void Robot::addGripper(const char* linkName, const char* gripperName,
     FrameIndex previousFrame(robot->model().getFrameId(jointName));
     robot->model().addFrame(::pinocchio::Frame(
         gripperName, index, previousFrame, T, ::pinocchio::OP_FRAME));
+    // Recreate pinocchio data after modifying model
+    robot->createData();
     GripperPtr_t gripper = Gripper::create(gripperName, robot);
     gripper->clearance(clearance);
     robot->grippers.add(gripperName, gripper);
