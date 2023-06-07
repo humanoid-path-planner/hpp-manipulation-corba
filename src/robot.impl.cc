@@ -368,6 +368,11 @@ void Robot::addHandle(const char* linkName, const char* handleName,
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
     Transform3f T;
+
+    const ::pinocchio::Frame& linkFrame =
+      robot->model().frames[robot->model().getFrameId(std::string(linkName))];
+    assert(linkFrame.type == ::pinocchio::BODY);
+
     pinocchio::JointIndex index(0);
     std::string jointName("universe");
     if (joint) {
@@ -375,14 +380,15 @@ void Robot::addHandle(const char* linkName, const char* handleName,
       jointName = joint->name();
     }
     hppTransformToTransform3f(localPosition, T);
-    HandlePtr_t handle = Handle::create(handleName, T, robot, joint);
+    HandlePtr_t handle = Handle::create
+      (handleName, linkFrame.placement * T, robot, joint);
     handle->clearance(clearance);
     handle->mask(corbaServer::boolSeqToVector(mask, 6));
     robot->handles.add(handleName, handle);
     assert(robot->model().existFrame(jointName));
     FrameIndex previousFrame(robot->model().getFrameId(jointName));
     robot->model().addFrame(::pinocchio::Frame(handleName, index, previousFrame,
-                                               T, ::pinocchio::OP_FRAME));
+        linkFrame.placement * T, ::pinocchio::OP_FRAME));
     // Recreate pinocchio data after modifying model
     robot->createData();
   } catch (const std::exception& exc) {
@@ -396,6 +402,11 @@ void Robot::addGripper(const char* linkName, const char* gripperName,
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     JointPtr_t joint = getJointByBodyNameOrThrow(problemSolver(), linkName);
     Transform3f T;
+
+    const ::pinocchio::Frame& linkFrame =
+      robot->model().frames[robot->model().getFrameId(std::string(linkName))];
+    assert(linkFrame.type == ::pinocchio::BODY);
+
     pinocchio::JointIndex index(0);
     std::string jointName("universe");
     if (joint) {
@@ -406,7 +417,8 @@ void Robot::addGripper(const char* linkName, const char* gripperName,
     assert(robot->model().existFrame(jointName));
     FrameIndex previousFrame(robot->model().getFrameId(jointName));
     robot->model().addFrame(::pinocchio::Frame(
-        gripperName, index, previousFrame, T, ::pinocchio::OP_FRAME));
+        gripperName, index, previousFrame, linkFrame.placement * T,
+        ::pinocchio::OP_FRAME));
     // Recreate pinocchio data after modifying model
     robot->createData();
     GripperPtr_t gripper = Gripper::create(gripperName, robot);
