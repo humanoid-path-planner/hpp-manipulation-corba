@@ -50,13 +50,6 @@ module hpp {
         void trajectoryConstraint (in constraints_idl::Implicit c) raises (Error);
         void trajectory (in core_idl::Path eeTraj, in boolean se3Output) raises (Error);
       }; // interface EET_PIECEWISE
-
-      interface EET_HERMITE : core_idl::SteeringMethod
-      {
-        core_idl::Path makePiecewiseLinearTrajectory (in floatSeqSeq points, in floatSeq weights) raises (Error);
-        void trajectoryConstraint (in constraints_idl::Implicit c) raises (Error);
-        void trajectory (in core_idl::Path eeTraj, in boolean se3Output) raises (Error);
-      }; // interface EET_HERMITE
     }; // module steeringMethod
   }; // module manipulation
 }; // module hpp
