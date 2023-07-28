@@ -32,7 +32,24 @@ import re
 import abc
 import sys
 from .constraints import Constraints
+from .possible_grasps import PossibleGrasps
 
+## Class that stores grasp validation instances
+class GraspIsAllowed(object):
+    def __init__(self):
+        self.graspValidations_ = list()
+
+    ## Successively calls all the validation instances
+    #  \param grasps the set of grasp to validate
+    #  \return False if one validation fails, True otherwise
+    def __call__(self, grasps):
+        for gv in self.graspValidations_:
+            if not gv(grasps):
+                return False
+        return True
+
+    def append(self, graspValidation):
+        self.graspValidations_.append(graspValidation)
 
 class Rules(object):
     def __init__(self, grippers, handles, rules):
@@ -141,7 +158,7 @@ class GraphFactoryAbstract(ABC):
         # It must return a boolean
         #
         # It defaults to: \code lambda x : True
-        self.graspIsAllowed = lambda x: True
+        self.graspIsAllowed = GraspIsAllowed()
 
         # # \name Internal variables
         # \{
@@ -215,7 +232,17 @@ class GraphFactoryAbstract(ABC):
         Set the function \\ref graspIsAllowed
         \\param rules a list of Rule objects
         """
-        self.graspIsAllowed = Rules(self.grippers, self.handles, rules)
+        self.graspIsAllowed.append(Rules(self.grippers, self.handles, rules))
+
+    def setPossibleGrasps(self, grasps):
+        """
+        Define the possible grasps
+        \\param grasps a dictionaty whose keys are the grippers registered in
+                the factory and whose values are lists of handles also
+                registered in the factory
+        """
+        self.graspIsAllowed.append(PossibleGrasps(self.grippers, self.handles,
+                                                  grasps))
 
     def generate(self):
         """
@@ -334,9 +361,9 @@ class GraphFactoryAbstract(ABC):
                a list of handle indices or None if the gripper is available.
                the order in the list corresponds to the order of the gripper
                in the list of all grippers.
-               For instance, if a robot has 3 grippers
-                 ("g1", "g2", "g3"), and grasps is equal to
-                 ("h2", "h1", None), then
+               For instance, if a robot has 3 grippers registered in the factory
+               ("g1", "g2", "g3"), handles ["h1", "h2"] are registered in
+               the factory, and grasps is equal to (1, 0, None), then
                  \\li "g1" holds "h2",
                  \\li "g2" holds "h1", and
                  \\li "g3" does not hold anything.
