@@ -52,6 +52,6 @@ class PossibleGrasps(object):
 
     def __call__(self, grasps):
         for ig, ih in enumerate(grasps):
-            if not ih is None and not ih in self.possibleGrasps[ig]:
+            if ih is not None and ih not in self.possibleGrasps[ig]:
                 return False
         return True
