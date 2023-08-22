@@ -37,7 +37,7 @@ from .possible_grasps import PossibleGrasps
 
 class GraspIsAllowed(object):
     """Class that stores grasp validation instances"""
-    
+
     def __init__(self):
         """
         Successively calls all the validation instances
