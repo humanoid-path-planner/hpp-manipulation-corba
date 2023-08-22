@@ -28,6 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 # DAMAGE.
 
+
 # Define possible grasps for the ConstraintGraphFactory
 #
 # In some applications, attachment between objects is modeled with grippers and
@@ -52,6 +53,3 @@ class PossibleGrasps(object):
             if not ih is None and not ih in self.possibleGrasps[ig]:
                 return False
         return True
-
-        
-    

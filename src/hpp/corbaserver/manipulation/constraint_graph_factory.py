@@ -34,6 +34,7 @@ import sys
 from .constraints import Constraints
 from .possible_grasps import PossibleGrasps
 
+
 ## Class that stores grasp validation instances
 class GraspIsAllowed(object):
     def __init__(self):
@@ -50,6 +51,7 @@ class GraspIsAllowed(object):
 
     def append(self, graspValidation):
         self.graspValidations_.append(graspValidation)
+
 
 class Rules(object):
     def __init__(self, grippers, handles, rules):
@@ -241,8 +243,7 @@ class GraphFactoryAbstract(ABC):
                 the factory and whose values are lists of handles also
                 registered in the factory
         """
-        self.graspIsAllowed.append(PossibleGrasps(self.grippers, self.handles,
-                                                  grasps))
+        self.graspIsAllowed.append(PossibleGrasps(self.grippers, self.handles, grasps))
 
     def generate(self):
         """
