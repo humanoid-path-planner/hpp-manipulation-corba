@@ -35,14 +35,17 @@ from .constraints import Constraints
 from .possible_grasps import PossibleGrasps
 
 
-## Class that stores grasp validation instances
 class GraspIsAllowed(object):
+    """Class that stores grasp validation instances"""
+    
     def __init__(self):
+        """
+        Successively calls all the validation instances
+         \param grasps the set of grasp to validate
+         \return False if one validation fails, True otherwise
+        """
         self.graspValidations_ = list()
 
-    ## Successively calls all the validation instances
-    #  \param grasps the set of grasp to validate
-    #  \return False if one validation fails, True otherwise
     def __call__(self, grasps):
         for gv in self.graspValidations_:
             if not gv(grasps):
