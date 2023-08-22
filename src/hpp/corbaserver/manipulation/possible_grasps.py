@@ -36,11 +36,13 @@
 # This class helps defining in a simple way which gripper can grasp which
 # handle.
 class PossibleGrasps(object):
-    # Constructor
-    # \param grasps a dictionaty whose keys are the grippers registered in the
-    #        factory and whose values are lists of handles also registered in
-    #        the factory
     def __init__(self, grippers, handles, grasps):
+        """
+        Constructor
+        \param grasps a dictionaty whose keys are the grippers registered in the
+               factory and whose values are lists of handles also registered in
+               the factory
+        """
         self.possibleGrasps = list()
         for ig, gripper in enumerate(grippers):
             handles_ = grasps.get(gripper, list())
