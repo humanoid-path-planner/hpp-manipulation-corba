@@ -36,6 +36,7 @@ module hpp
 {
   module core_idl {
     interface PathPlanner;
+    interface PathProjector;
   }; // module core
 
   module manipulation_idl {
@@ -68,14 +69,56 @@ module hpp
         void setIkSolverInitialization (in IkSolverInitialization solver);
         //-> ikSolverInitialization
       }; // interface EndEffectorTrajectory
+
+      interface TransitionPlanner : core_idl::PathPlanner
+      {
+        core_idl::PathVector planPath(in floatSeq qInit,
+            in floatSeqSeq qGoals, in boolean resetRoadmap) raises(Error);
+        core_idl::Path directPath(in floatSeq q1, in floatSeq q2, in boolean
+            validate, out boolean success, out string status) raises(Error);
+        core_idl::PathVector optimizePath(in core_idl::Path path) raises(Error);
+        core_idl::PathVector timeParameterization(in core_idl::PathVector path)
+          raises(Error);
+        void setReedsAndSheppSteeringMethod(in double turningRadius)
+          raises(Error);
+        void setEdge(in long id) raises(Error);
+        void setPathProjector(in string pathProjectorType,in double tolerance)
+          raises(Error);
+        //*     std::string _pathProjectorType (pathProjectorType);
+        //*     core::ProblemSolverPtr_t ps = server_->problemSolver();
+        //*     core::PathProjectorBuilder_t factory(ps->pathProjectors.get
+        //*       (_pathProjectorType));
+        //*     core::PathProjectorPtr_t pathProjector(factory(getT()->
+        //*         innerProblem(), tolerance));
+        //*     (getT()->pathProjector (pathProjector));
+        void clearPathOptimizers() raises(Error);
+        void addPathOptimizer(in string pathOptimizerType) raises(Error);
+        //*     std::string _pathOptimizerType (pathOptimizerType);
+        //*     core::ProblemSolverPtr_t ps = server_->problemSolver();
+        //*     core::PathOptimizerBuilder_t factory(ps->pathOptimizers.get
+        //*       (_pathOptimizerType));
+        //*     core::PathOptimizerPtr_t pathOptimizer(factory(getT()->
+        //*         problem()));
+        //*     (getT()->addPathOptimizer (pathOptimizer));
+        void setParameter (in string name, in any value) raises (Error);
+        //* getT()->innerProblem()->setParameter(name,
+        //*     hpp::corbaServer::toParameter(value));
+
+      }; // interface TransitionPlanner
+
     }; // module pathPlanner_idl
   }; // module manipulation_idl
 }; // module hpp
 
 //* #include <hpp/manipulation/path-planner/end-effector-trajectory.hh>
+//* #include <hpp/manipulation/path-planner/transition-planner.hh>
+//* #include <hpp/core/parameter.hh>
+//* #include <hpp/core/problem.hh>
 //* #include <hpp/core_idl/paths.hh>
 //* #include <hpp/core_idl/path_planners.hh>
+//* #include <hpp/core_idl/path_projectors.hh>
 //* #include <hpp/manipulation_idl/_graph-fwd.hh>
 //* #include <hpp/manipulation/roadmap.hh>
+//* #include <hpp/manipulation/problem-solver.hh>
 
 #endif // HPP_MANIPULATION_CORBA_PATH_PLANNERS_IDL

@@ -124,6 +124,7 @@ class Problem : public virtual POA_hpp::corbaserver::manipulation::Problem {
 
   core_idl::Roadmap_ptr createRoadmap(core_idl::Distance_ptr distance,
                                       pinocchio_idl::Device_ptr robot);
+  virtual hpp::core_idl::PathPlanner_ptr createTransitionPlanner();
 
  private:
   ProblemSolverPtr_t problemSolver();

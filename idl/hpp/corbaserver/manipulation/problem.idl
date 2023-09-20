@@ -304,6 +304,8 @@ module hpp {
 
         core_idl::Roadmap createRoadmap(in core_idl::Distance distance,
           in pinocchio_idl::Device robot) raises (Error);
+        /// Create a Transition Planner
+        core_idl::PathPlanner createTransitionPlanner() raises(Error);
       }; // interface Problem
     }; // module manipulation
   }; // module corbaserver

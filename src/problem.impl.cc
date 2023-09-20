@@ -38,6 +38,9 @@
 #include <hpp/core/parser/roadmap.hh>
 #include <hpp/core/path-projector.hh>
 #include <hpp/core/path-vector.hh>
+#include <hpp/core/weighed-distance.hh>
+#include <hpp/manipulation/path-planner/transition-planner.hh>
+#include <hpp/manipulation/roadmap.hh>
 #include <hpp/pinocchio/gripper.hh>
 #include <hpp/pinocchio/serialization.hh>
 #include <hpp/util/debug.hh>
@@ -58,7 +61,7 @@
 #include "hpp/core_idl/distances-fwd.hh"      // For hpp::core_impl::Roadmap
 #include "hpp/core_idl/path_planners-fwd.hh"  // For hpp::core_impl::Roadmap
 #include "hpp/manipulation_idl/_graph.hh"
-#include "hpp/manipulation_idl/_path_planners-fwd.hh"
+#include "hpp/manipulation_idl/_path_planners.hh"
 #include "hpp/manipulation_idl/device-fwd.hh"
 #include "hpp/pinocchio_idl/robots-fwd.hh"
 #include "tools.hh"
@@ -738,6 +741,20 @@ core_idl::Roadmap_ptr Problem::createRoadmap(core_idl::Distance_ptr distance,
       Roadmap::create(
           reference_to_object<core::Distance>(server_->parent(), distance),
           reference_to_object<pinocchio::Device>(server_->parent(), robot)));
+  return o._retn();
+}
+core_idl::PathPlanner_ptr
+Problem::createTransitionPlanner()
+{
+  ProblemSolverPtr_t ps = problemSolver();
+  core::DistancePtr_t dist(core::WeighedDistance::create(ps->robot()));
+  core::RoadmapPtr_t roadmap(core::Roadmap::create(dist, ps->robot()));
+  ProblemPtr_t problem(ps->problem());
+  core::PathPlannerPtr_t planner
+    (manipulation::pathPlanner::TransitionPlanner::createWithRoadmap
+     (problem, roadmap));
+  core_idl::PathPlanner_var o =
+    makeServantDownCast<core_impl::PathPlanner>(server_->parent(), planner);
   return o._retn();
 }
 }  // namespace impl
