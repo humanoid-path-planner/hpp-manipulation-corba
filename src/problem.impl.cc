@@ -743,18 +743,16 @@ core_idl::Roadmap_ptr Problem::createRoadmap(core_idl::Distance_ptr distance,
           reference_to_object<pinocchio::Device>(server_->parent(), robot)));
   return o._retn();
 }
-core_idl::PathPlanner_ptr
-Problem::createTransitionPlanner()
-{
+core_idl::PathPlanner_ptr Problem::createTransitionPlanner() {
   ProblemSolverPtr_t ps = problemSolver();
   core::DistancePtr_t dist(core::WeighedDistance::create(ps->robot()));
   core::RoadmapPtr_t roadmap(core::Roadmap::create(dist, ps->robot()));
   ProblemPtr_t problem(ps->problem());
-  core::PathPlannerPtr_t planner
-    (manipulation::pathPlanner::TransitionPlanner::createWithRoadmap
-     (problem, roadmap));
+  core::PathPlannerPtr_t planner(
+      manipulation::pathPlanner::TransitionPlanner::createWithRoadmap(problem,
+                                                                      roadmap));
   core_idl::PathPlanner_var o =
-    makeServantDownCast<core_impl::PathPlanner>(server_->parent(), planner);
+      makeServantDownCast<core_impl::PathPlanner>(server_->parent(), planner);
   return o._retn();
 }
 }  // namespace impl
