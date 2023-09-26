@@ -251,8 +251,7 @@ void Robot::loadEnvironmentModel(const char* urdfName, const char* srdfName,
     DevicePtr_t object = Device::create(p);
     pinocchio::urdf::loadModel(object, 0, "", "anchor", urdfName, "");
     srdf::loadModelFromFile(object, "", srdfName);
-    object->controlComputation(hpp::pinocchio::JOINT_POSITION);
-    object->computeForwardKinematics();
+    object->computeForwardKinematics(pinocchio::JOINT_POSITION);
     object->updateGeometryPlacements();
 
     // Detach objects from joints
@@ -295,8 +294,7 @@ void Robot::loadEnvironmentModelFromString(const char* urdfString,
     pinocchio::urdf::loadModelFromString(object, 0, "", "anchor", urdfString,
                                          srdfString);
     srdf::loadModelFromXML(object, "", srdfString);
-    object->controlComputation(hpp::pinocchio::JOINT_POSITION);
-    object->computeForwardKinematics();
+    object->computeForwardKinematics(hpp::pinocchio::JOINT_POSITION);
     object->updateGeometryPlacements();
 
     // Detach objects from joints
