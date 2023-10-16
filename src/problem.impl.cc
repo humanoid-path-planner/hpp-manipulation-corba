@@ -71,9 +71,9 @@ namespace manipulation {
 namespace impl {
 using corbaServer::makeServantDownCast;
 using corbaServer::reference_to_object;
+using corbaServer::floatSeqToConfig;
 
 namespace {
-using corbaServer::floatSeqToConfigPtr;
 typedef core::ProblemSolver CPs_t;
 
 Names_t* jointAndShapes(const JointAndShapes_t& js, intSeq_out indexes_out,
@@ -456,13 +456,13 @@ bool Problem::applyConstraints(hpp::ID id, const hpp::floatSeq& input,
     }
     bool success = false;
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    ConfigurationPtr_t config = floatSeqToConfigPtr(robot, input, true);
-    success = constraint->apply(*config);
+    Configuration_t config = floatSeqToConfig(robot, input, true);
+    success = constraint->apply(config);
     if (hpp::core::ConfigProjectorPtr_t configProjector =
             constraint->configProjector()) {
       residualError = configProjector->residualError();
     }
-    output = vectorToFloatSeq(*config);
+    output = vectorToFloatSeq(config);
     return success;
   } catch (const std::exception& exc) {
     throw hpp::Error(exc.what());
@@ -487,15 +487,15 @@ bool Problem::applyConstraintsWithOffset(hpp::ID IDedge,
     }
     bool success = false;
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    ConfigurationPtr_t config = floatSeqToConfigPtr(robot, input, true);
-    ConfigurationPtr_t qoffset = floatSeqToConfigPtr(robot, qnear, true);
+    Configuration_t config = floatSeqToConfig(robot, input, true);
+    Configuration_t qoffset = floatSeqToConfig(robot, qnear, true);
     value_type dist = 0;
     core::NodePtr_t nNode =
         problemSolver()->roadmap()->nearestNode(qoffset, dist);
     if (dist < 1e-8)
-      success = edge->generateTargetConfig(nNode, *config);
+      success = edge->generateTargetConfig(nNode, config);
     else
-      success = edge->generateTargetConfig(*qoffset, *config);
+      success = edge->generateTargetConfig(qoffset, config);
 
     hpp::core::ConfigProjectorPtr_t configProjector(
         edge->targetConstraint()->configProjector());
@@ -504,12 +504,12 @@ bool Problem::applyConstraintsWithOffset(hpp::ID IDedge,
     } else {
       hppDout(info, "No config projector.");
     }
-    ULong size = (ULong)config->size();
+    ULong size = (ULong)config.size();
     hpp::floatSeq* q_ptr = new hpp::floatSeq();
     q_ptr->length(size);
 
     for (std::size_t i = 0; i < size; ++i) {
-      (*q_ptr)[(ULong)i] = (*config)[i];
+      (*q_ptr)[(ULong)i] = config[i];
     }
     output = q_ptr;
     return success;
@@ -550,13 +550,13 @@ bool Problem::buildAndProjectPath(hpp::ID IDedge, const hpp::floatSeq& qb,
     }
     bool success = false;
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    ConfigurationPtr_t q1 = floatSeqToConfigPtr(robot, qb, true);
-    ConfigurationPtr_t q2 = floatSeqToConfigPtr(robot, qe, true);
+    Configuration_t q1 = floatSeqToConfig(robot, qb, true);
+    Configuration_t q2 = floatSeqToConfig(robot, qe, true);
     core::PathVectorPtr_t pv;
     indexNotProj = -1;
     indexProj = -1;
     core::PathPtr_t path;
-    success = edge->build(path, *q1, *q2);
+    success = edge->build(path, q1, q2);
     if (!success) return false;
     pv = HPP_DYNAMIC_PTR_CAST(core::PathVector, path);
     indexNotProj = (CORBA::Long)problemSolver()->paths().size();

@@ -58,7 +58,6 @@ using constraints::Implicit;
 namespace impl {
 using CORBA::ULong;
 using corbaServer::floatSeqToConfig;
-using corbaServer::floatSeqToConfigPtr;
 using graph::Edge;
 using graph::EdgePtr_t;
 using graph::LevelSetEdge;
@@ -619,13 +618,13 @@ bool Graph::applyNodeConstraints(hpp::ID id, const hpp::floatSeq& input,
     }
     bool success = false;
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    ConfigurationPtr_t config = floatSeqToConfigPtr(robot, input, true);
-    success = constraint->apply(*config);
+    Configuration_t config = floatSeqToConfig(robot, input, true);
+    success = constraint->apply(config);
     if (hpp::core::ConfigProjectorPtr_t configProjector =
             constraint->configProjector()) {
       residualError = configProjector->residualError();
     }
-    output = vectorToFloatSeq(*config);
+    output = vectorToFloatSeq(config);
     return success;
   } catch (const std::exception& exc) {
     throw hpp::Error(exc.what());
@@ -649,20 +648,20 @@ bool Graph::applyEdgeLeafConstraints(hpp::ID IDedge, const hpp::floatSeq& qleaf,
     }
     bool success = false;
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    ConfigurationPtr_t config = floatSeqToConfigPtr(robot, input, true);
-    ConfigurationPtr_t qRhs = floatSeqToConfigPtr(robot, qleaf, true);
+    Configuration_t config = floatSeqToConfig(robot, input, true);
+    Configuration_t qRhs = floatSeqToConfig(robot, qleaf, true);
     ConstraintSetPtr_t cs(edge->pathConstraint());
     assert(cs);
 
     if (cs->configProjector()) {
-      cs->configProjector()->rightHandSideFromConfig(*qRhs);
-      success = cs->apply(*config);
+      cs->configProjector()->rightHandSideFromConfig(qRhs);
+      success = cs->apply(config);
       residualError = cs->configProjector()->residualError();
     } else {
       residualError = 0;
     }
 
-    output = vectorToFloatSeq(*config);
+    output = vectorToFloatSeq(config);
     return success;
   } catch (const std::exception& exc) {
     throw hpp::Error(exc.what());
@@ -686,14 +685,14 @@ bool Graph::generateTargetConfig(hpp::ID IDedge, const hpp::floatSeq& qleaf,
     }
     bool success = false;
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
-    ConfigurationPtr_t config = floatSeqToConfigPtr(robot, input, true);
-    ConfigurationPtr_t qRhs = floatSeqToConfigPtr(robot, qleaf, true);
+    Configuration_t config = floatSeqToConfig(robot, input, true);
+    Configuration_t qRhs = floatSeqToConfig(robot, qleaf, true);
     value_type dist = 0;
     core::NodePtr_t nNode = problemSolver()->roadmap()->nearestNode(qRhs, dist);
     if (dist < 1e-8)
-      success = edge->generateTargetConfig(nNode, *config);
+      success = edge->generateTargetConfig(nNode, config);
     else
-      success = edge->generateTargetConfig(*qRhs, *config);
+      success = edge->generateTargetConfig(qRhs, config);
 
     hpp::core::ConfigProjectorPtr_t configProjector(
         edge->targetConstraint()->configProjector());
@@ -702,12 +701,12 @@ bool Graph::generateTargetConfig(hpp::ID IDedge, const hpp::floatSeq& qleaf,
     } else {
       hppDout(info, "No config projector.");
     }
-    ULong size = (ULong)config->size();
+    ULong size = (ULong)config.size();
     hpp::floatSeq* q_ptr = new hpp::floatSeq();
     q_ptr->length(size);
 
     for (std::size_t i = 0; i < size; ++i) {
-      (*q_ptr)[(ULong)i] = (*config)[i];
+      (*q_ptr)[(ULong)i] = config[i];
     }
     output = q_ptr;
     return success;
