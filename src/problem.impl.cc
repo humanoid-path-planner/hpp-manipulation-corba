@@ -69,9 +69,9 @@
 namespace hpp {
 namespace manipulation {
 namespace impl {
+using corbaServer::floatSeqToConfig;
 using corbaServer::makeServantDownCast;
 using corbaServer::reference_to_object;
-using corbaServer::floatSeqToConfig;
 
 namespace {
 typedef core::ProblemSolver CPs_t;
