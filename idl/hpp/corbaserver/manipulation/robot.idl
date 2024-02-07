@@ -167,6 +167,11 @@ module hpp
         out Transform_ position)
       raises (hpp::Error);
 
+    /// Set handle position in joint frame
+    void setHandlePositionInJoint (in string handleName,
+        in Transform_ position)
+      raises (hpp::Error);
+
   }; // interface Robot
   }; // module manipulation
   }; // module corbaserver

@@ -260,6 +260,11 @@ class Robot(Parent):
         """
         return self.client.manipulation.robot.getHandlePositionInJoint(handleName)
 
+    def setHandlePositionInJoint (self, handleName, position):
+        """Set handle position in joint frame"""
+        return self.client.manipulation.robot.setHandlePositionInJoint\
+            (handleName, position)
+
     # # \}
 
 

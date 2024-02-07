@@ -463,6 +463,24 @@ char* Robot::getHandlePositionInJoint(const char* handleName,
   }
 }
 
+
+void Robot::setHandlePositionInJoint (const char* handleName,
+                                      const ::hpp::Transform_ position)
+{
+  try {
+    DevicePtr_t robot = getRobotOrThrow (problemSolver());
+    HandlePtr_t handle = robot->handles.get (handleName);
+    std::string name_str(handleName);
+    if (!handle)
+      throw std::invalid_argument ("Robot does not have any handle named " + name_str);
+    Transform3f t;
+    hppTransformToTransform3f (position, t);
+    handle->localPosition(t);
+  } catch (const std::exception& exc) {
+    throw Error (exc.what ());
+  }
+}
+
 }  // namespace impl
 }  // namespace manipulation
 }  // namespace hpp
