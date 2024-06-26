@@ -40,6 +40,8 @@ module hpp
   }; // module core
 
   module manipulation_idl {
+    typedef string ValidationReport;
+    typedef unsigned long long size_t;
     interface Roadmap : core_idl::Roadmap {
       void constraintGraph (in graph_idl::Graph graph) raises (Error);
     }; // interface Roadmap
@@ -76,6 +78,20 @@ module hpp
             in floatSeqSeq qGoals, in boolean resetRoadmap) raises(Error);
         core_idl::Path directPath(in floatSeq q1, in floatSeq q2, in boolean
             validate, out boolean success, out string status) raises(Error);
+	boolean validateConfiguration(in floatSeq config, in size_t id, out ValidationReport report)
+	  raises(Error);
+	//* using namespace hpp::core;
+	//* Configuration_t q(corbaServer::floatSeqToVector(config));
+	//* ValidationReportPtr_t vr;
+	//* bool res = getT()->validateConfiguration(q, id, vr);
+	//* if (vr) {
+	//*   std::ostringstream oss; oss << *vr;
+	//*   std::string res = oss.str();
+	//*   report = CORBA::string_dup(res.c_str());
+	//* } else {
+	//*   report = CORBA::string_dup("");
+	//* }
+	//* return res;
         core_idl::PathVector optimizePath(in core_idl::Path path) raises(Error);
         core_idl::PathVector timeParameterization(in core_idl::PathVector path)
           raises(Error);
