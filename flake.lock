@@ -69,11 +69,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719772432,
-        "narHash": "sha256-qFcBT/YDTsrAzEE//JmCbk1TnVrnYcme1WCzkPaXwZ0=",
+        "lastModified": 1721747044,
+        "narHash": "sha256-aa0FeHJJ3d+fiP0FXrCyuGTkomHWGYsmnGNIGZRUMYE=",
         "owner": "humanoid-path-planner",
         "repo": "hpp-corbaserver",
-        "rev": "f623d8cd51e627a12e7c6f240781dd7f4a5b7ddf",
+        "rev": "072c7095c2e60711c2013e8952806b702eaf20d4",
         "type": "github"
       },
       "original": {
@@ -294,16 +294,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1719587477,
-        "narHash": "sha256-bUGCrWnAuEqmhD7sunx+L6yqukHueDs99MbHM7M5/8A=",
+        "lastModified": 1719769549,
+        "narHash": "sha256-JlN/7QzbTlvX2CBgTpCCGt3b+9Nxgotp4xdIK35xFBQ=",
         "owner": "humanoid-path-planner",
         "repo": "hpp-template-corba",
-        "rev": "e5512a9505df6bc9ae317d51e3e14cdc27d6583e",
+        "rev": "1a66c81d93388c702de5ea53170dd47e5d07b0e5",
         "type": "github"
       },
       "original": {
         "owner": "humanoid-path-planner",
-        "ref": "release/5.1.0",
         "repo": "hpp-template-corba",
         "type": "github"
       }
