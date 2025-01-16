@@ -332,7 +332,11 @@ void Problem::createPrePlacementConstraint(const char* placName,
 }
 
 void Problem::createQPStabilityConstraint(const char* constraintName,
+#ifdef HPP_CONSTRAINTS_USE_QPOASES
                                           const char* comRootJointName,
+#else
+					  const char*,
+#endif
                                           const Names_t& shapesName) {
   try {
 #ifdef HPP_CONSTRAINTS_USE_QPOASES
