@@ -336,7 +336,7 @@ Transform__slice* Robot::getRootJointPosition(const char* robotName) {
     const ::pinocchio::Frame& rf = model.frames[frameIdx[0]];
     double* res = new Transform_;
     if (rf.type == ::pinocchio::JOINT)
-      Transform3sTohppTransform(model.jointPlacements[rf.parent], res);
+      Transform3sTohppTransform(model.jointPlacements[rf.parentJoint], res);
     else
       Transform3sTohppTransform(rf.placement, res);
     return res;
