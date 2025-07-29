@@ -30,7 +30,7 @@
 
 import abc
 import re
-import sys
+from abc import ABC
 
 from .constraints import Constraints
 from .possible_grasps import PossibleGrasps
@@ -98,17 +98,6 @@ class Rules:
             if apply:
                 return s
         return self.defaultAcceptation
-
-
-if sys.version_info.major == 2:
-
-    class ABC:
-        """Python 2.7 equivalent to abc.ABC Python 3 class."""
-
-        __metaclass__ = abc.ABCMeta
-
-else:
-    from abc import ABC
 
 
 class GraphFactoryAbstract(ABC):
@@ -392,7 +381,7 @@ class GraphFactoryAbstract(ABC):
                 ish = self.handles.index(h)
                 # nGrasp <- substitute current handle index at current gripper
                 # position.
-                nGrasps = grasps[:isg] + (ish,) + grasps[isg + 1 :]
+                nGrasps = (*grasps[:isg], ish, *grasps[isg + 1 :])
 
                 nextIsAllowed = self.graspIsAllowed(nGrasps)
                 isNewState = not self._existState(nGrasps)
