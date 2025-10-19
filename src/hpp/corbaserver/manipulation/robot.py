@@ -27,10 +27,11 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 # DAMAGE.
 
-from hpp.corbaserver import Client as BasicClient
-from hpp.corbaserver.manipulation import Client as ManipulationClient
 from hpp.corbaserver.robot import Robot as Parent
 from hpp.corbaserver.robot import StaticStabilityConstraintsFactory
+
+from hpp.corbaserver import Client as BasicClient
+from hpp.corbaserver.manipulation import Client as ManipulationClient
 
 
 class CorbaClient:
