@@ -483,8 +483,7 @@ void Robot::setHandlePositionInJoint(const char* handleName,
   }
 }
 
-::hpp::floatSeq* Robot::getHandleApproachingDirection(
-    const char* handleName) {
+::hpp::floatSeq* Robot::getHandleApproachingDirection(const char* handleName) {
   try {
     DevicePtr_t robot = getRobotOrThrow(problemSolver());
     HandlePtr_t handle = robot->handles.get(handleName);
@@ -511,8 +510,7 @@ void Robot::setHandleApproachingDirection(const char* handleName,
       throw std::invalid_argument("Robot does not have any handle named " +
                                   name_str);
     if (direction.length() != 3)
-      throw std::invalid_argument(
-          "Approaching direction must be a 3D vector");
+      throw std::invalid_argument("Approaching direction must be a 3D vector");
     vector3_t dir(direction[0], direction[1], direction[2]);
     handle->approachingDirection(dir);
   } catch (const std::exception& exc) {
