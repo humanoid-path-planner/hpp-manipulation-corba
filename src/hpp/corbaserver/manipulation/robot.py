@@ -267,7 +267,32 @@ class Robot(Parent):
             handleName, position
         )
 
-    # # \}
+    def getHandleApproachingDirection(self, handleName):
+        """
+        Return the approaching direction of a handle.
+
+        The approaching direction defines the direction along which the gripper
+        approaches the handle for pregrasp constraints.
+
+        \\param handleName name of the handle
+        \\return approaching direction as a list [x, y, z]
+        """
+        return self.client.manipulation.robot.getHandleApproachingDirection(
+            handleName
+        )
+
+    def setHandleApproachingDirection(self, handleName, direction):
+        """
+        Set the approaching direction of a handle.
+
+        \\param handleName name of the handle
+        \\param direction approaching direction as a list [x, y, z]
+        """
+        return self.client.manipulation.robot.setHandleApproachingDirection(
+            handleName, direction
+        )
+
+    # # \\}
 
 
 class HumanoidRobot(Robot, StaticStabilityConstraintsFactory):

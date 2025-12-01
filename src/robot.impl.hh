@@ -110,6 +110,12 @@ class Robot : public virtual POA_hpp::corbaserver::manipulation::Robot {
   virtual void setHandlePositionInJoint(const char* handleName,
                                         const ::hpp::Transform_ position);
 
+  virtual ::hpp::floatSeq* getHandleApproachingDirection(
+      const char* handleName);
+
+  virtual void setHandleApproachingDirection(const char* handleName,
+                                             const ::hpp::floatSeq& direction);
+
  private:
   ProblemSolverPtr_t problemSolver();
   Server* server_;
