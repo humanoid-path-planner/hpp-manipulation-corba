@@ -277,9 +277,7 @@ class Robot(Parent):
         \\param handleName name of the handle
         \\return approaching direction as a list [x, y, z]
         """
-        return self.client.manipulation.robot.getHandleApproachingDirection(
-            handleName
-        )
+        return self.client.manipulation.robot.getHandleApproachingDirection(handleName)
 
     def setHandleApproachingDirection(self, handleName, direction):
         """
