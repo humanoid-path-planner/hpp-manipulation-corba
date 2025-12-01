@@ -102,6 +102,9 @@ HandlePtr_t copy(const HandlePtr_t& in, const DevicePtr_t& device,
   HandlePtr_t out =
       Handle::create(p + in->name(), position, device, JointPtr_t());
   out->clearance(in->clearance());
+  out->mask(in->mask());
+  out->maskComp(in->maskComp());
+  out->approachingDirection(in->approachingDirection());
   return out;
 }
 
@@ -475,6 +478,43 @@ void Robot::setHandlePositionInJoint(const char* handleName,
     Transform3s t;
     hppTransformToTransform3s(position, t);
     handle->localPosition(t);
+  } catch (const std::exception& exc) {
+    throw Error(exc.what());
+  }
+}
+
+::hpp::floatSeq* Robot::getHandleApproachingDirection(
+    const char* handleName) {
+  try {
+    DevicePtr_t robot = getRobotOrThrow(problemSolver());
+    HandlePtr_t handle = robot->handles.get(handleName);
+    if (!handle) throw Error("This handle does not exist.");
+    const vector3_t& dir = handle->approachingDirection();
+    ::hpp::floatSeq* result = new ::hpp::floatSeq();
+    result->length(3);
+    (*result)[0] = dir[0];
+    (*result)[1] = dir[1];
+    (*result)[2] = dir[2];
+    return result;
+  } catch (const std::exception& exc) {
+    throw Error(exc.what());
+  }
+}
+
+void Robot::setHandleApproachingDirection(const char* handleName,
+                                          const ::hpp::floatSeq& direction) {
+  try {
+    DevicePtr_t robot = getRobotOrThrow(problemSolver());
+    HandlePtr_t handle = robot->handles.get(handleName);
+    std::string name_str(handleName);
+    if (!handle)
+      throw std::invalid_argument("Robot does not have any handle named " +
+                                  name_str);
+    if (direction.length() != 3)
+      throw std::invalid_argument(
+          "Approaching direction must be a 3D vector");
+    vector3_t dir(direction[0], direction[1], direction[2]);
+    handle->approachingDirection(dir);
   } catch (const std::exception& exc) {
     throw Error(exc.what());
   }
