@@ -8,38 +8,51 @@
     nix-ros-overlay.follows = "gepetto/nix-ros-overlay";
     systems.follows = "gepetto/systems";
     treefmt-nix.follows = "gepetto/treefmt-nix";
+
+    # TODO: #239 required for now, remove this after next release
+    hpp-manipulation.url = "github:humanoid-path-planner/hpp-manipulation";
+    hpp-manipulation.inputs.gepetto.follows = "gepetto";
   };
 
   outputs =
     inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = import inputs.systems;
-      imports = [ inputs.gepetto.flakeModule ];
-      perSystem =
-        {
-          lib,
-          pkgs,
-          self',
-          ...
-        }:
-        {
-          packages = {
-            default = self'.packages.hpp-manipulation-corba;
-            hpp-manipulation-corba = pkgs.python3Packages.hpp-manipulation-corba.overrideAttrs {
-              src = lib.fileset.toSource {
-                root = ./.;
-                fileset = lib.fileset.unions [
-                  ./CMakeLists.txt
-                  ./doc
-                  ./idl
-                  ./include
-                  ./package.xml
-                  ./src
-                  ./tests
-                ];
-              };
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
+      { lib, self, ... }:
+      {
+        systems = import inputs.systems;
+        imports = [
+          inputs.gepetto.flakeModule
+          {
+            gepetto-pkgs.overlays = [
+              inputs.hpp-manipulation.overlays.default
+              self.overlays.default
+            ];
+          }
+        ];
+        flake.overlays.default = _final: prev: {
+          hpp-manipulation-corba = prev.hpp-manipulation-corba.overrideAttrs {
+            src = lib.fileset.toSource {
+              root = ./.;
+              fileset = lib.fileset.unions [
+                ./CMakeLists.txt
+                ./doc
+                ./idl
+                ./include
+                ./package.xml
+                ./src
+                ./tests
+              ];
             };
           };
         };
-    };
+        perSystem =
+          { pkgs, self', ... }:
+          {
+            packages = {
+              default = self'.packages.hpp-manipulation-corba;
+              hpp-manipulation-corba = pkgs.python3Packages.hpp-manipulation-corba;
+            };
+          };
+      }
+    );
 }
