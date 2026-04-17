@@ -27,9 +27,7 @@ cmake_minimum_required(VERSION 3.22)
 set(PROJECT_NAME hpp-manipulation-corba)
 set(PROJECT_DESCRIPTION "Corba server for manipulation planning")
 
-set(CLIENT_ONLY
-    FALSE
-    CACHE BOOL "Set to true to install the client only")
+set(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 set(CUSTOM_HEADER_DIR hpp/corbaserver/manipulation)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
@@ -38,24 +36,32 @@ set(CXX_DISABLE_WERROR true)
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
 if(EXISTS "${JRL_CMAKE_MODULES}/base.cmake")
-  message(STATUS "JRL cmakemodules found in 'cmake/' git submodule")
+    message(STATUS "JRL cmakemodules found in 'cmake/' git submodule")
 else()
-  find_package(jrl-cmakemodules QUIET CONFIG)
-  if(jrl-cmakemodules_FOUND)
-    get_property(
-      JRL_CMAKE_MODULES
-      TARGET jrl-cmakemodules::jrl-cmakemodules
-      PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-    message(STATUS "JRL cmakemodules found on system at ${JRL_CMAKE_MODULES}")
-  else()
-    message(STATUS "JRL cmakemodules not found. Let's fetch it.")
-    include(FetchContent)
-    FetchContent_Declare(
-      "jrl-cmakemodules"
-      GIT_REPOSITORY "https://github.com/jrl-umi3218/jrl-cmakemodules.git")
-    FetchContent_MakeAvailable("jrl-cmakemodules")
-    FetchContent_GetProperties("jrl-cmakemodules" SOURCE_DIR JRL_CMAKE_MODULES)
-  endif()
+    find_package(jrl-cmakemodules QUIET CONFIG)
+    if(jrl-cmakemodules_FOUND)
+        get_property(
+            JRL_CMAKE_MODULES
+            TARGET jrl-cmakemodules::jrl-cmakemodules
+            PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+        )
+        message(
+            STATUS
+            "JRL cmakemodules found on system at ${JRL_CMAKE_MODULES}"
+        )
+    else()
+        message(STATUS "JRL cmakemodules not found. Let's fetch it.")
+        include(FetchContent)
+        FetchContent_Declare(
+            "jrl-cmakemodules"
+            GIT_REPOSITORY "https://github.com/jrl-umi3218/jrl-cmakemodules.git"
+        )
+        FetchContent_MakeAvailable("jrl-cmakemodules")
+        FetchContent_GetProperties(
+            "jrl-cmakemodules"
+            SOURCE_DIR JRL_CMAKE_MODULES
+        )
+    endif()
 endif()
 
 include("${JRL_CMAKE_MODULES}/hpp.cmake")
@@ -71,21 +77,23 @@ config_files(doc/main.hh)
 set(${PROJECT_NAME}_HEADERS include/hpp/corbaserver/manipulation/client.hh)
 
 if(NOT CLIENT_ONLY)
-  set(${PROJECT_NAME}_HEADERS
-      include/hpp/corbaserver/manipulation/server.hh
-      include/hpp/corbaserver/manipulation/fwd.hh ${${PROJECT_NAME}_HEADERS})
+    set(${PROJECT_NAME}_HEADERS
+        include/hpp/corbaserver/manipulation/server.hh
+        include/hpp/corbaserver/manipulation/fwd.hh
+        ${${PROJECT_NAME}_HEADERS}
+    )
 endif(NOT CLIENT_ONLY)
 
 add_project_dependency("hpp-corbaserver" REQUIRED)
 if(NOT CLIENT_ONLY)
-  add_project_dependency("hpp-manipulation" REQUIRED)
-  add_project_dependency("hpp-manipulation-urdf" REQUIRED)
+    add_project_dependency("hpp-manipulation" REQUIRED)
+    add_project_dependency("hpp-manipulation-urdf" REQUIRED)
 endif(NOT CLIENT_ONLY)
 add_required_dependency("omniORB4 >= 4.1.4")
 
 # search for python
 if(NOT FINDPYTHON_ALREADY_CALLED)
-  findpython()
+    findpython()
 endif()
 
 add_subdirectory(src)
