@@ -18,9 +18,6 @@ license = "BSD-2-Clause"
 name = "hpp-manipulation-corba"
 version = "9.0.0"
 
-[tool.ruff]
-extend-exclude = ["cmake"]
-
 [tool.ruff.lint]
 extend-ignore = ["RUF012"]
 extend-select = ["I", "NPY", "RUF", "UP", "W"]
