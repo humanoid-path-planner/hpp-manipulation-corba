@@ -16,7 +16,7 @@ dependencies = [
 description = "Corba server for manipulation planning"
 license = "BSD-2-Clause"
 name = "hpp-manipulation-corba"
-version = "9.0.0"
+version = "9.0.2"
 
 [tool.ruff.lint]
 extend-ignore = ["RUF012"]
